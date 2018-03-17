@@ -3,10 +3,10 @@ import GifList from '../components/GifList';
 import GifSearch from '../components/GifSearch'
 
 export default class GifListContainer extends Component {
-  state = {gifs: []}
+  state = {gifs: [], searchTerm: 'search'}
 
   componentDidMount() {
-    this.fetchGifs('cat')
+    this.fetchGifs(this.state.searchTerm)
   }
 
   fetchGifs = (queryTerm) => {
@@ -15,11 +15,20 @@ export default class GifListContainer extends Component {
     .then(json => this.setState({ gifs: json.data.slice(0, 10) }))
   }
 
+  onChange = (e) => {
+    this.setState({ searchTerm: e.target.value});
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    this.fetchGifs(this.state.searchTerm);
+  }
+
   render() {
     return (
-      <div>
-        <GifList gifs={this.state.gifs}/>
-        <GifSearch />
+      <div className="container">
+        <GifSearch handleSubmit={this.onSubmit} handleChange={this.onChange} />
+        <GifList gifs={this.state.gifs} />
       </div>
     )
   }
